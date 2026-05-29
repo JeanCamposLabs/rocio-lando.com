@@ -1,0 +1,86 @@
+---
+// Custom ink cursor. Activated by main.ts only on fine-pointer devices.
+---
+
+<div class="cursor" data-cursor aria-hidden="true">
+  <div class="cursor__dot" data-cursor-dot></div>
+  <div class="cursor__ring" data-cursor-ring>
+    <span class="cursor__label" data-cursor-label></span>
+  </div>
+</div>
+
+<style>
+  .cursor {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: var(--z-cursor);
+    display: none;
+  }
+  :global(html.has-cursor) .cursor {
+    display: block;
+  }
+  .cursor__dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    margin: -3.5px 0 0 -3.5px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translate3d(-100px, -100px, 0);
+    mix-blend-mode: var(--cursor-blend, normal);
+  }
+  .cursor__ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 42px;
+    height: 42px;
+    margin: -21px 0 0 -21px;
+    border: 1.5px solid var(--ink-faint);
+    border-radius: 50%;
+    transform: translate3d(-100px, -100px, 0);
+    transition: width 0.35s var(--ease-spring), height 0.35s var(--ease-spring),
+      border-color 0.35s, background 0.35s, opacity 0.35s;
+    display: grid;
+    place-items: center;
+  }
+  .cursor__label {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--on-accent);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.3s, transform 0.3s var(--ease-spring);
+    text-transform: uppercase;
+  }
+  /* hovering an interactive element */
+  :global(html.cursor-hover) .cursor__ring {
+    width: 62px;
+    height: 62px;
+    border-color: transparent;
+    background: color-mix(in oklab, var(--accent) 18%, transparent);
+  }
+  /* a labelled call-to-action (e.g. gallery tile: "view") */
+  :global(html.cursor-view) .cursor__ring {
+    width: 84px;
+    height: 84px;
+    border-color: transparent;
+    background: var(--accent);
+  }
+  :global(html.cursor-view) .cursor__label {
+    opacity: 1;
+    transform: scale(1);
+  }
+  :global(html.cursor-view) .cursor__dot {
+    opacity: 0;
+  }
+  :global(html.cursor-down) .cursor__ring {
+    width: 30px;
+    height: 30px;
+  }
+</style>

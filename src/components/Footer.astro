@@ -1,0 +1,186 @@
+---
+import site from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="footer__cta" data-reveal>
+      <span class="eyebrow">Let's draw something together</span>
+      <a href={`mailto:${site.email}`} class="footer__mail" data-cursor-view="write">
+        <span class="line-mask"><span class="line-inner">Say hello</span></span>
+      </a>
+      <p class="footer__sub">
+        Commissions, editorial work, prints &amp; collaborations —
+        <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>
+      </p>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__col">
+        <span class="footer__label">Elsewhere</span>
+        <ul role="list" class="footer__links">
+          {
+            site.socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener" class="link-underline" data-cursor-hover>
+                  {s.label} <span class="footer__handle">{s.handle}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="footer__col">
+        <span class="footer__label">Navigate</span>
+        <ul role="list" class="footer__links">
+          {
+            site.nav.map((n) => (
+              <li>
+                <a href={n.href} class="link-underline" data-cursor-hover>
+                  {n.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="footer__col footer__col--end">
+        <button class="footer__top" data-scroll-top data-cursor-hover type="button">
+          Back to top <span aria-hidden="true">↑</span>
+        </button>
+        <span class="footer__loc">{site.location}</span>
+      </div>
+    </div>
+
+    <div class="footer__name" aria-hidden="true">
+      <span data-footer-name>Rocío&nbsp;Landó</span>
+    </div>
+
+    <div class="footer__base">
+      <p>© {year} {site.name}. {site.credits.builtNote}</p>
+      <p class="footer__egg font-hand" data-cursor-hover>psst — try the Konami code, or press <kbd>D</kbd> to doodle.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    z-index: var(--z-content);
+    padding-block: var(--space-3xl) var(--space-l);
+    background: var(--paper-sunken);
+    border-top: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .footer__cta {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+  .footer__mail {
+    display: inline-block;
+    margin-top: 0.3em;
+    font-family: var(--font-display);
+    font-size: var(--step-8);
+    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+    line-height: 1;
+    color: var(--ink);
+    transition: color 0.4s var(--ease-out-quart);
+  }
+  .footer__mail:hover {
+    color: var(--accent);
+  }
+  .footer__sub {
+    margin-top: var(--space-s);
+    color: var(--ink-soft);
+    font-size: var(--step-0);
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-l);
+    padding-block: var(--space-l);
+    border-top: 1px solid var(--line);
+  }
+  .footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .footer__col--end {
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-m);
+  }
+  .footer__label {
+    font-size: var(--step--2);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .footer__links a {
+    color: var(--ink-soft);
+  }
+  .footer__handle {
+    color: var(--ink-faint);
+    font-size: var(--step--1);
+  }
+  .footer__top {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .footer__top span {
+    display: inline-block;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .footer__top:hover span {
+    transform: translateY(-4px);
+  }
+  .footer__loc {
+    color: var(--ink-faint);
+    font-size: var(--step--1);
+  }
+  .footer__name {
+    margin-top: var(--space-l);
+    text-align: center;
+    line-height: 0.8;
+    overflow: hidden;
+  }
+  .footer__name span {
+    font-family: var(--font-display);
+    font-variation-settings: 'opsz' 144, 'SOFT' 70, 'WONK' 1;
+    font-size: var(--step-mega);
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line-strong);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 30%, transparent), transparent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: var(--space-m);
+    color: var(--ink-faint);
+    font-size: var(--step--1);
+  }
+  .footer__egg {
+    font-size: var(--step-0);
+    color: var(--accent);
+  }
+  .footer__egg kbd {
+    font-family: var(--font-sans);
+    font-size: 0.8em;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+  }
+</style>

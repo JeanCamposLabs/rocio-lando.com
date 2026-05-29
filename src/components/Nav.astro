@@ -1,0 +1,385 @@
+---
+import site from '../data/site';
+
+interface Props {
+  bare?: boolean;
+}
+const { bare = false } = Astro.props;
+const homeHref = '/';
+---
+
+<header class="nav" data-nav>
+  <div class="nav__bar">
+    <a href={homeHref} class="nav__logo" data-cursor-hover aria-label={`${site.name} — home`}>
+      <span class="nav__logo-mark">R</span>
+      <span class="nav__logo-text">
+        <span>Rocío</span>
+        <span>Landó</span>
+      </span>
+    </a>
+
+    <div class="nav__controls">
+      <button
+        class="nav__theme"
+        data-theme-toggle
+        data-cursor-hover
+        type="button"
+        aria-label="Toggle light and dark theme"
+      >
+        <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"></circle>
+          <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <line x1="12" y1="2.5" x2="12" y2="5"></line>
+            <line x1="12" y1="19" x2="12" y2="21.5"></line>
+            <line x1="2.5" y1="12" x2="5" y2="12"></line>
+            <line x1="19" y1="12" x2="21.5" y2="12"></line>
+            <line x1="5.2" y1="5.2" x2="7" y2="7"></line>
+            <line x1="17" y1="17" x2="18.8" y2="18.8"></line>
+            <line x1="18.8" y1="5.2" x2="17" y2="7"></line>
+            <line x1="7" y1="17" x2="5.2" y2="18.8"></line>
+          </g>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"
+            fill="currentColor"></path>
+        </svg>
+      </button>
+
+      {
+        !bare ? (
+          <button
+            class="nav__menu-btn"
+            data-menu-toggle
+            data-cursor-hover
+            type="button"
+            aria-expanded="false"
+            aria-controls="nav-overlay"
+          >
+            <span class="nav__menu-label" data-menu-label>Menu</span>
+            <span class="nav__menu-icon" aria-hidden="true">
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        ) : (
+          <a href={homeHref} class="nav__back link-underline" data-cursor-hover>
+            ← Back to site
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    !bare && (
+      <nav id="nav-overlay" class="overlay" data-overlay aria-label="Primary">
+        <div class="overlay__bg" aria-hidden="true" />
+        <div class="overlay__grid">
+          <ul class="overlay__links" role="list">
+            {site.nav.map((item, i) => (
+              <li class="overlay__item" style={`--i:${i}`}>
+                <a href={item.href} data-overlay-link data-cursor-hover>
+                  <span class="overlay__index">0{i + 1}</span>
+                  <span class="overlay__link-text">{item.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div class="overlay__foot">
+            <div class="overlay__col">
+              <span class="overlay__label">Get in touch</span>
+              <a href={`mailto:${site.email}`} class="overlay__email link-underline" data-cursor-hover>
+                {site.email}
+              </a>
+              <span class="overlay__loc">{site.location}</span>
+            </div>
+            <div class="overlay__col overlay__social">
+              <span class="overlay__label">Elsewhere</span>
+              {site.socials.map((s) => (
+                <a href={s.url} target="_blank" rel="noopener" class="link-underline" data-cursor-hover>
+                  {s.label} <span aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+    )
+  }
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-nav);
+    transition: transform 0.5s var(--ease-out-quart);
+  }
+  .nav.is-hidden {
+    transform: translateY(-110%);
+  }
+  .nav__bar {
+    position: relative;
+    z-index: calc(var(--z-overlay) + 1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(1rem, 2.4vw, 1.6rem) var(--gutter);
+  }
+  .nav__bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in oklab, var(--paper) 72%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+  }
+  .nav.is-scrolled .nav__bar::before {
+    opacity: 1;
+  }
+
+  .nav__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ink);
+    line-height: 0.86;
+  }
+  .nav__logo-mark {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 2.9rem);
+    font-variation-settings: 'opsz' 144, 'SOFT' 0, 'WONK' 1;
+    color: var(--accent);
+  }
+  .nav__logo-text {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    font-variation-settings: 'opsz' 40;
+    letter-spacing: 0.01em;
+  }
+
+  .nav__controls {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.8rem, 2vw, 1.4rem);
+  }
+
+  .nav__theme {
+    position: relative;
+    z-index: calc(var(--z-overlay) + 2);
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--ink);
+    background: color-mix(in oklab, var(--paper-raised) 60%, transparent);
+    transition: transform 0.4s var(--ease-spring), border-color 0.3s, color 0.3s;
+  }
+  .nav__theme:hover {
+    transform: rotate(25deg);
+    color: var(--accent);
+  }
+  .nav__theme svg {
+    position: absolute;
+    transition: opacity 0.3s, transform 0.5s var(--ease-spring);
+  }
+  .icon-moon {
+    opacity: 0;
+    transform: scale(0.4) rotate(-40deg);
+  }
+  [data-theme='dark'] .icon-sun {
+    opacity: 0;
+    transform: scale(0.4) rotate(40deg);
+  }
+  [data-theme='dark'] .icon-moon {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav__menu-btn {
+    position: relative;
+    z-index: calc(var(--z-overlay) + 2);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--ink);
+  }
+  .nav__menu-label {
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav__menu-icon {
+    position: relative;
+    width: 30px;
+    height: 14px;
+  }
+  .nav__menu-icon span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.45s var(--ease-spring), width 0.45s var(--ease-spring);
+  }
+  .nav__menu-icon span:nth-child(1) {
+    top: 2px;
+  }
+  .nav__menu-icon span:nth-child(2) {
+    bottom: 2px;
+    width: 65%;
+  }
+  .nav.is-open .nav__menu-icon span:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+  }
+  .nav.is-open .nav__menu-icon span:nth-child(2) {
+    width: 100%;
+    transform: translateY(-5px) rotate(-45deg);
+  }
+  .nav.is-open .nav__theme,
+  .nav.is-open .nav__menu-btn {
+    color: var(--paper);
+  }
+  .nav.is-open .nav__logo {
+    color: var(--paper);
+  }
+  .nav.is-open .nav__theme {
+    border-color: color-mix(in oklab, var(--paper) 30%, transparent);
+  }
+
+  .nav__back {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ---------- Overlay menu ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-overlay);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--header-h) var(--gutter) var(--space-xl);
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .overlay__bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(150deg, #16120b, #241a12 60%, #14110c);
+    clip-path: circle(0% at calc(100% - 60px) 50px);
+    transition: clip-path 0.8s var(--ease-in-out);
+  }
+  .nav.is-open .overlay {
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .nav.is-open .overlay__bg {
+    clip-path: circle(150% at calc(100% - 60px) 50px);
+  }
+  .overlay__grid {
+    position: relative;
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    color: var(--paper);
+  }
+  .overlay__links {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.1rem, 1vh, 0.5rem);
+  }
+  .overlay__item {
+    overflow: hidden;
+  }
+  .overlay__item a {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: clamp(0.1rem, 0.6vh, 0.4rem);
+    color: var(--paper);
+    width: fit-content;
+    transform: translateY(110%);
+    opacity: 0;
+    transition: transform 0.7s var(--ease-out-expo), opacity 0.7s,
+      color 0.3s, padding-left 0.4s var(--ease-out-quart);
+    transition-delay: calc(var(--i) * 0.05s);
+  }
+  .nav.is-open .overlay__item a {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .overlay__index {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .overlay__link-text {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 9vw, 5.5rem);
+    font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
+    line-height: 1.04;
+  }
+  .overlay__item a:hover {
+    color: var(--accent);
+    padding-left: 1rem;
+  }
+  .overlay__foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-l) var(--space-2xl);
+    margin-top: clamp(1.5rem, 5vh, 3.5rem);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease 0.35s, transform 0.6s var(--ease-out-expo) 0.35s;
+  }
+  .nav.is-open .overlay__foot {
+    opacity: 1;
+    transform: none;
+  }
+  .overlay__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .overlay__label {
+    font-size: var(--step--2);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--paper) 55%, transparent);
+    margin-bottom: 0.4rem;
+  }
+  .overlay__email {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+  }
+  .overlay__loc {
+    color: color-mix(in oklab, var(--paper) 70%, transparent);
+    font-size: var(--step--1);
+  }
+  .overlay__social {
+    gap: 0.55rem;
+  }
+  .overlay__social a {
+    color: var(--paper);
+    font-size: var(--step-0);
+  }
+
+  @media (max-width: 600px) {
+    .nav__logo-text {
+      display: none;
+    }
+  }
+</style>

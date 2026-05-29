@@ -1,0 +1,156 @@
+---
+import site from '../data/site';
+---
+
+<div class="loader" data-loader aria-hidden="true">
+  <div class="loader__inner">
+    <span class="loader__kicker font-hand">est. 2026</span>
+    <span class="loader__name">{site.name}</span>
+    <span class="loader__role">{site.role}</span>
+  </div>
+  <div class="loader__bar">
+    <span class="loader__fill" data-loader-fill></span>
+  </div>
+  <span class="loader__count" data-loader-count>0</span>
+  <div class="loader__curtain"></div>
+</div>
+
+<style>
+  .loader {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-loader);
+    display: grid;
+    place-items: center;
+    background: var(--paper);
+    overflow: hidden;
+    animation: loaderLift 0.8s var(--ease-in-out) 1.5s forwards;
+  }
+  .loader.is-done {
+    animation: loaderLift 0.9s var(--ease-in-out) forwards;
+  }
+  .loader__inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2em;
+    animation: loaderContentOut 0.5s var(--ease-out-quart) 1.05s forwards;
+  }
+  .loader__kicker {
+    font-size: var(--step-1);
+    color: var(--accent);
+    opacity: 0;
+    animation: fadeUp 0.8s var(--ease-out-expo) 0.1s forwards;
+  }
+  .loader__name {
+    font-family: var(--font-display);
+    font-size: var(--step-7);
+    font-variation-settings: 'opsz' 144, 'SOFT' 40, 'WONK' 1;
+    line-height: 1;
+    color: var(--ink);
+    opacity: 0;
+    filter: blur(12px);
+    animation: revealName 1s var(--ease-out-expo) 0.25s forwards;
+  }
+  .loader__role {
+    font-size: var(--step--1);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    opacity: 0;
+    animation: fadeUp 0.8s var(--ease-out-expo) 0.5s forwards;
+  }
+  .loader__bar {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(2rem, 8vh, 5rem);
+    transform: translateX(-50%);
+    width: min(220px, 50vw);
+    height: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .loader__fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: fillBar 1.2s var(--ease-in-out) 0.15s forwards;
+  }
+  .loader__count {
+    position: absolute;
+    right: clamp(1.5rem, 6vw, 4rem);
+    bottom: clamp(1.6rem, 7vh, 4.5rem);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--ink-faint);
+  }
+  .loader__curtain {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: translateY(100%);
+    z-index: -1;
+  }
+
+  @keyframes revealName {
+    to {
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fillBar {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes loaderContentOut {
+    to {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+  @keyframes loaderLift {
+    to {
+      transform: translateY(-100%);
+      pointer-events: none;
+      visibility: hidden;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loader {
+      animation: loaderFade 0.4s ease 0.7s forwards;
+    }
+    .loader__name {
+      animation: none;
+      opacity: 1;
+      filter: none;
+    }
+    .loader__kicker,
+    .loader__role {
+      animation: none;
+      opacity: 1;
+    }
+    @keyframes loaderFade {
+      to {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+    }
+  }
+</style>
