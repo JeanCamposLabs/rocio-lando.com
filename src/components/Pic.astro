@@ -1,0 +1,109 @@
+---
+/**
+ * <Pic> — responsive, optimized image with blur-up loading.
+ * Reads renditions from the generated manifest (scripts/optimize-images.mjs).
+ * Falls back gracefully to the raw src if a rendition isn't found yet.
+ */
+import manifest from '../data/image-manifest.json';
+
+interface Props {
+  src: string;
+  alt: string;
+  sizes?: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  fit?: 'cover' | 'contain' | 'none';
+  draggable?: boolean;
+}
+
+const {
+  src,
+  alt,
+  sizes = '(max-width: 700px) 92vw, 40vw',
+  class: className = '',
+  loading = 'lazy',
+  fetchpriority = 'auto',
+  fit = 'none',
+  draggable = false,
+} = Astro.props;
+
+type Entry = {
+  width: number;
+  height: number;
+  aspect: number;
+  lqip: string;
+  color: string;
+  sources: { w: number; src: string }[];
+};
+
+const entry = (manifest as Record<string, Entry>)[src];
+const fitClass = fit !== 'none' ? `fit-${fit}` : '';
+---
+
+{
+  entry ? (
+    <img
+      class:list={['pic', className, fitClass]}
+      src={entry.sources[entry.sources.length - 1].src}
+      srcset={entry.sources.map((s) => `${s.src} ${s.w}w`).join(', ')}
+      sizes={sizes}
+      width={entry.width}
+      height={entry.height}
+      alt={alt}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding="async"
+      draggable={draggable}
+      data-blurup
+      style={`--lqip:url(${entry.lqip});--pic-bg:${entry.color};${
+        fit === 'none' ? `aspect-ratio:${entry.width}/${entry.height};` : ''
+      }`}
+    />
+  ) : (
+    <img
+      class:list={['pic', className, fitClass]}
+      src={src}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      draggable={draggable}
+    />
+  )
+}
+
+<style>
+  .pic {
+    width: 100%;
+    height: auto;
+  }
+  .pic.fit-cover {
+    height: 100%;
+    object-fit: cover;
+  }
+  .pic.fit-contain {
+    height: 100%;
+    object-fit: contain;
+  }
+  .pic[data-blurup] {
+    background-image: var(--lqip);
+    background-size: cover;
+    background-position: center;
+    background-color: var(--pic-bg, var(--paper-sunken));
+    transition: filter 0.7s var(--ease-out-quart), opacity 0.7s ease;
+  }
+  .pic[data-blurup]:not(.is-loaded) {
+    filter: blur(14px);
+    transform: scale(1.02);
+  }
+  .pic[data-blurup].is-loaded {
+    background-image: none;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pic[data-blurup]:not(.is-loaded) {
+      filter: none;
+      transform: none;
+    }
+  }
+</style>

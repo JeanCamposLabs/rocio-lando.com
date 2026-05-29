@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Studio Manager · Rocío Landó</title>
+    <style>
+      body { font-family: system-ui, sans-serif; }
+      .rl-splash {
+        position: fixed; inset: 0; display: grid; place-content: center; gap: .5rem;
+        text-align: center; background: #f1ead9; color: #16120b; font-family: Georgia, serif;
+      }
+      .rl-splash b { font-size: 2rem; font-style: italic; }
+      .rl-splash span { font-family: system-ui, sans-serif; opacity: .6; font-size: .9rem; }
+    </style>
+  </head>
+  <body>
+    <div class="rl-splash" id="splash">
+      <b>Studio Manager</b>
+      <span>loading the sketchbook…</span>
+    </div>
+    <!-- Decap CMS -->
+    <script src="https://unpkg.com/decap-cms@^3.6.0/dist/decap-cms.js"></script>
+    <script>
+      if (window.CMS) {
+        window.CMS.registerEventListener({ name: 'preSave', handler: () => {} });
+        document.getElementById('splash')?.remove();
+      }
+    </script>
+  </body>
+</html>

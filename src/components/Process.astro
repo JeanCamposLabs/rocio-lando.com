@@ -1,0 +1,118 @@
+---
+import site from '../data/site';
+const steps = site.process;
+---
+
+<section class="process section" id="process">
+  <div class="container">
+    <div class="process__grid">
+      <div class="process__aside">
+        <p class="eyebrow" data-reveal="fade">How a page happens</p>
+        <h2 class="section-title process__title" data-reveal>From a walk<br />to the wall.</h2>
+        <p class="lead" data-reveal style="--reveal-delay:.1s">
+          Four steps, more or less the same every time — and the wobble in between
+          is exactly what makes it mine.
+        </p>
+      </div>
+
+      <ol class="process__steps" role="list" data-process>
+        <span class="process__line" aria-hidden="true"><span class="process__line-fill" data-process-line></span></span>
+        {steps.map((s) => (
+          <li class="process__step" data-reveal>
+            <span class="process__no" aria-hidden="true">{s.no}</span>
+            <div class="process__step-body">
+              <h3 class="process__step-title">{s.title}</h3>
+              <p class="process__step-text">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    background: var(--paper);
+  }
+  .process__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .process__aside {
+    position: sticky;
+    top: calc(var(--header-h) + 1rem);
+  }
+  .process__title {
+    margin-block: var(--space-s);
+  }
+
+  .process__steps {
+    --no: clamp(2.6rem, 5.5vw, 3.8rem);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  .process__line {
+    position: absolute;
+    left: calc(var(--no) / 2 - 1px);
+    top: 0.6rem;
+    bottom: 0.6rem;
+    width: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .process__line-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--accent), var(--gold));
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .process__step {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(1rem, 2.5vw, 1.8rem);
+  }
+  .process__no {
+    flex: none;
+    width: var(--no);
+    height: var(--no);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-variation-settings: 'opsz' 144, 'WONK' 1;
+    position: relative;
+    z-index: 1;
+  }
+  .process__step-body {
+    padding-top: 0.2rem;
+  }
+  .process__step-title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-2xs);
+  }
+  .process__step-text {
+    color: var(--ink-soft);
+    font-size: var(--step-0);
+    max-width: 46ch;
+  }
+
+  @media (max-width: 900px) {
+    .process__grid {
+      grid-template-columns: 1fr;
+    }
+    .process__aside {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,290 @@
+---
+import { getCollection } from 'astro:content';
+import Pic from './Pic.astro';
+
+const projects = (await getCollection('projects'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="projects" id="projects" data-projects>
+  <div class="projects__pin" data-projects-pin>
+    <div class="projects__track" data-projects-track>
+      <!-- Intro panel -->
+      <div class="projects__panel projects__intro">
+        <p class="eyebrow">Projects &amp; series</p>
+        <h2 class="projects__intro-title">
+          Bigger<br /><em class="italic">stories.</em>
+        </h2>
+        <p class="lead">
+          Some pieces belong together — collaborations and ongoing series with a
+          narrative of their own.
+        </p>
+        <p class="projects__hint font-hand" aria-hidden="true">
+          scroll sideways →
+        </p>
+      </div>
+
+      {projects.map((p, i) => {
+        const d = p.data;
+        const extra = d.images.slice(1);
+        return (
+          <article class="projects__panel project" data-lb-group={`project-${p.id}`}>
+            <div class="project__text">
+              <span class="project__no">0{i + 1}</span>
+              <span class="project__cat chip">{d.category}</span>
+              <h3 class="project__title">{d.title}</h3>
+              <p class="project__summary">{d.summary}</p>
+              <dl class="project__meta">
+                {d.year && (
+                  <div>
+                    <dt>Year</dt>
+                    <dd>{d.year}</dd>
+                  </div>
+                )}
+                {d.role && (
+                  <div>
+                    <dt>Role</dt>
+                    <dd>{d.role}</dd>
+                  </div>
+                )}
+                {d.collaborator && (
+                  <div>
+                    <dt>With</dt>
+                    <dd>
+                      {d.collaboratorUrl ? (
+                        <a href={d.collaboratorUrl} target="_blank" rel="noopener" class="link-underline">
+                          {d.collaborator} ↗
+                        </a>
+                      ) : (
+                        d.collaborator
+                      )}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
+            <div class="project__visuals">
+              <figure
+                class="project__cover"
+                data-full={d.cover}
+                data-title={d.title}
+                data-meta={[d.role, d.year].filter(Boolean).join(' · ')}
+                data-alt={d.images[0]?.alt ?? d.title}
+                data-caption={d.summary}
+                data-cursor-view="view"
+                tabindex="0"
+                role="button"
+                aria-label={`View ${d.title}`}
+              >
+                <Pic src={d.cover} alt={d.images[0]?.alt ?? d.title} sizes="(max-width: 900px) 90vw, 42vw" fit="cover" />
+              </figure>
+              {extra.length > 0 && (
+                <div class="project__thumbs">
+                  {extra.map((im) => (
+                    <figure
+                      class="project__thumb"
+                      data-full={im.src}
+                      data-title={d.title}
+                      data-meta={[d.role, d.year].filter(Boolean).join(' · ')}
+                      data-alt={im.alt}
+                      data-caption=""
+                      data-cursor-view="view"
+                      tabindex="0"
+                      role="button"
+                      aria-label={`View detail from ${d.title}`}
+                    >
+                      <Pic src={im.src} alt={im.alt} sizes="22vw" fit="cover" />
+                    </figure>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        );
+      })}
+
+      <!-- Outro panel -->
+      <div class="projects__panel projects__outro">
+        <p class="font-hand projects__outro-hand">…and the next one is always in the sketchbook.</p>
+        <a class="btn" href="#contact" data-cursor-hover>
+          Start a project <span class="btn__icon" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects {
+    position: relative;
+    z-index: var(--z-content);
+    background: var(--paper-sunken);
+    border-block: 1px solid var(--line);
+  }
+  .projects__pin {
+    /* default (mobile / no-JS / reduced-motion): native horizontal scroll */
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .projects__pin::-webkit-scrollbar {
+    display: none;
+  }
+  .projects__track {
+    display: flex;
+    align-items: stretch;
+  }
+  .projects__panel {
+    scroll-snap-align: center;
+    flex: 0 0 auto;
+    min-height: min(86svh, 760px);
+    padding: var(--space-2xl) var(--gutter);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* When JS pins the section, it drives translateX instead */
+  :global(html.projects-pinned) .projects__pin {
+    overflow: visible;
+    scroll-snap-type: none;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+  }
+  :global(html.projects-pinned) .projects__track {
+    will-change: transform;
+  }
+
+  .projects__intro,
+  .projects__outro {
+    width: min(86vw, 560px);
+    gap: var(--space-s);
+  }
+  .projects__intro-title {
+    font-size: var(--step-7);
+    line-height: 0.95;
+    margin-block: var(--space-xs) var(--space-s);
+  }
+  .projects__intro-title em {
+    color: var(--accent);
+  }
+  .projects__hint {
+    margin-top: var(--space-m);
+    font-size: var(--step-2);
+    color: var(--accent);
+  }
+  .projects__outro {
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+  }
+  .projects__outro-hand {
+    font-size: var(--step-4);
+    max-width: 16ch;
+    margin-bottom: var(--space-m);
+    color: var(--ink);
+  }
+
+  /* Project panel */
+  .project {
+    width: min(94vw, 1180px);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+  }
+  .project__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+  .project__no {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--accent);
+  }
+  .project__cat {
+    pointer-events: none;
+  }
+  .project__title {
+    font-size: var(--step-6);
+    line-height: 0.98;
+    margin-top: var(--space-2xs);
+  }
+  .project__summary {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    line-height: 1.5;
+  }
+  .project__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m);
+    margin-top: var(--space-s);
+  }
+  .project__meta dt {
+    font-size: var(--step--2);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.2rem;
+  }
+  .project__meta dd {
+    font-size: var(--step-0);
+    color: var(--ink);
+  }
+
+  .project__visuals {
+    display: grid;
+    gap: 0.8rem;
+  }
+  .project__cover {
+    aspect-ratio: 5 / 4;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    box-shadow: var(--shadow-l);
+    border: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .project__cover :global(img) {
+    transition: transform 0.8s var(--ease-out-quart);
+  }
+  .project__cover:hover :global(img.is-loaded) {
+    transform: scale(1.05);
+  }
+  .project__thumbs {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .project__thumb {
+    aspect-ratio: 1;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .project__thumb:hover {
+    transform: translateY(-4px);
+  }
+
+  @media (max-width: 900px) {
+    .project {
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+      width: 86vw;
+    }
+    .project__thumbs {
+      grid-auto-columns: minmax(70px, 1fr);
+    }
+  }
+</style>

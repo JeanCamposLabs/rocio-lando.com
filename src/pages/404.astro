@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" noLoader>
+  <section class="nf">
+    <div class="container">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="nf__title">This page<br /><em class="italic">wandered off.</em></h1>
+      <p class="lead nf__lead">
+        Probably out sketching a rooftop somewhere. Let's get you back to the studio.
+      </p>
+      <div class="nf__actions">
+        <a class="btn" href="/" data-cursor-hover>Back home <span class="btn__icon" aria-hidden="true">↗</span></a>
+        <a class="btn btn--ghost" href="/#work" data-cursor-hover>See the work</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+  .nf .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-s);
+  }
+  .nf__title {
+    font-size: var(--step-8);
+    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+  }
+  .nf__title em {
+    color: var(--accent);
+  }
+  .nf__lead {
+    max-width: 40ch;
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    margin-top: var(--space-s);
+  }
+</style>
