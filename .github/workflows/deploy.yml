@@ -1,22 +1,21 @@
-name: Deploy to GitHub Pages
+name: Build & Deploy (FTP)
+
+# Builds the Astro site and uploads the production output (dist/) to the
+# existing web host's public_html — so rocio-lando.com serves the new site
+# with no DNS changes. Uses the repo's existing FTP_* secrets.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment; let in-progress runs finish.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ftp-deploy
+  cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
+    name: Build & upload
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,38 +27,17 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
-        with:
-          # Auto-enable GitHub Pages (Actions source) on first run.
-          enablement: true
-
       - name: Install dependencies
         run: npm ci
 
-      - name: Build (optimizes images, then builds Astro)
-        # STAGING=1 builds for the github.io/rocio-lando.com/ sub-path.
-        # Remove STAGING (and re-add public/CNAME) to ship to the root domain.
+      - name: Build Astro (production · root domain)
         run: npm run build
-        env:
-          STAGING: '1'
 
-      - name: Keep staging on the github.io URL (don't claim the custom domain)
-        run: rm -f dist/CNAME
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy dist/ to host via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          path: ./dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ./public_html/
