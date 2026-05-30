@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Pic from '../../components/Pic.astro';
+import { withBase } from '../../lib/path';
 
 const CATEGORY_LABELS: Record<string, string> = {
   architecture: 'Architecture',
@@ -52,7 +53,7 @@ const jsonLd = {
   <article class="wp">
     <div class="container">
       <nav class="wp__crumbs">
-        <a href="/#work" class="link-underline" data-cursor-hover>← All work</a>
+        <a href={withBase('/') + '#work'} class="link-underline" data-cursor-hover>← All work</a>
         <span class="wp__cat chip">{CATEGORY_LABELS[d.category] ?? d.category}</span>
       </nav>
 
@@ -93,7 +94,7 @@ const jsonLd = {
           <h2 class="wp__related-title">More {CATEGORY_LABELS[d.category] ?? d.category}</h2>
           <div class="wp__related-grid">
             {related.map((r) => (
-              <a href={`/work/${r.id}`} class="wp__related-card" data-cursor-view="view">
+              <a href={withBase(`/work/${r.id}`)} class="wp__related-card" data-cursor-view="view">
                 <Pic src={r.data.image!} alt={r.data.alt || r.data.title} sizes="30vw" fit="cover" />
                 <span class="wp__related-name">{r.data.title}</span>
               </a>
@@ -103,11 +104,11 @@ const jsonLd = {
       )}
 
       <nav class="wp__pager">
-        <a href={`/work/${prev.id}`} class="wp__pager-link" data-cursor-hover>
+        <a href={withBase(`/work/${prev.id}`)} class="wp__pager-link" data-cursor-hover>
           <span>← Previous</span>
           <b>{prev.data.title}</b>
         </a>
-        <a href={`/work/${next.id}`} class="wp__pager-link wp__pager-link--next" data-cursor-hover>
+        <a href={withBase(`/work/${next.id}`)} class="wp__pager-link wp__pager-link--next" data-cursor-hover>
           <span>Next →</span>
           <b>{next.data.title}</b>
         </a>

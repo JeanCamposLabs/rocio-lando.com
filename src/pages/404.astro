@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/path';
 ---
 
 <Base title="Page not found" noLoader>
@@ -11,8 +12,8 @@ import Base from '../layouts/Base.astro';
         Probably out sketching a rooftop somewhere. Let's get you back to the studio.
       </p>
       <div class="nf__actions">
-        <a class="btn" href="/" data-cursor-hover>Back home <span class="btn__icon" aria-hidden="true">↗</span></a>
-        <a class="btn btn--ghost" href="/#work" data-cursor-hover>See the work</a>
+        <a class="btn" href={withBase('/')} data-cursor-hover>Back home <span class="btn__icon" aria-hidden="true">↗</span></a>
+        <a class="btn btn--ghost" href={withBase('/') + '#work'} data-cursor-hover>See the work</a>
       </div>
     </div>
   </section>

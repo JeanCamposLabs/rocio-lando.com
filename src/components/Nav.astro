@@ -1,11 +1,12 @@
 ---
 import site from '../data/site';
+import { withBase } from '../lib/path';
 
 interface Props {
   bare?: boolean;
 }
 const { bare = false } = Astro.props;
-const homeHref = '/';
+const homeHref = withBase('/');
 ---
 
 <header class="nav" data-nav>

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Pic from './Pic.astro';
 import manifest from '../data/image-manifest.json';
+import { withBase } from '../lib/path';
 
 const CATEGORY_LABELS: Record<string, string> = {
   architecture: 'Architecture',
@@ -26,7 +27,7 @@ const presentCats = CATEGORY_ORDER.filter((c) =>
 const fullSrc = (img?: string) => {
   if (!img) return '';
   const e = (manifest as Record<string, any>)[img];
-  return e ? e.sources[e.sources.length - 1].src : img;
+  return withBase(e ? e.sources[e.sources.length - 1].src : img);
 };
 
 const realCount = works.filter((w) => !w.data.placeholder).length;

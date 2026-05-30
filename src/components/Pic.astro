@@ -5,6 +5,7 @@
  * Falls back gracefully to the raw src if a rendition isn't found yet.
  */
 import manifest from '../data/image-manifest.json';
+import { withBase } from '../lib/path';
 
 interface Props {
   src: string;
@@ -45,8 +46,8 @@ const fitClass = fit !== 'none' ? `fit-${fit}` : '';
   entry ? (
     <img
       class:list={['pic', className, fitClass]}
-      src={entry.sources[entry.sources.length - 1].src}
-      srcset={entry.sources.map((s) => `${s.src} ${s.w}w`).join(', ')}
+      src={withBase(entry.sources[entry.sources.length - 1].src)}
+      srcset={entry.sources.map((s) => `${withBase(s.src)} ${s.w}w`).join(', ')}
       sizes={sizes}
       width={entry.width}
       height={entry.height}
@@ -63,7 +64,7 @@ const fitClass = fit !== 'none' ? `fit-${fit}` : '';
   ) : (
     <img
       class:list={['pic', className, fitClass]}
-      src={src}
+      src={withBase(src)}
       alt={alt}
       loading={loading}
       decoding="async"

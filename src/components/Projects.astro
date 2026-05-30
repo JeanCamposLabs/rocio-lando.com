@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Pic from './Pic.astro';
+import { withBase } from '../lib/path';
 
 const projects = (await getCollection('projects'))
   .filter((p) => !p.data.draft)
@@ -68,7 +69,7 @@ const projects = (await getCollection('projects'))
             <div class="project__visuals">
               <figure
                 class="project__cover"
-                data-full={d.cover}
+                data-full={withBase(d.cover)}
                 data-title={d.title}
                 data-meta={[d.role, d.year].filter(Boolean).join(' · ')}
                 data-alt={d.images[0]?.alt ?? d.title}
@@ -85,7 +86,7 @@ const projects = (await getCollection('projects'))
                   {extra.map((im) => (
                     <figure
                       class="project__thumb"
-                      data-full={im.src}
+                      data-full={withBase(im.src)}
                       data-title={d.title}
                       data-meta={[d.role, d.year].filter(Boolean).join(' · ')}
                       data-alt={im.alt}

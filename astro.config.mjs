@@ -2,9 +2,15 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+// STAGING=1 builds for the GitHub Pages project sub-path
+// (jeancamposlabs.github.io/rocio-lando.com/). Default build targets the
+// production root domain (rocio-lando.com).
+const STAGING = process.env.STAGING === '1';
+
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://rocio-lando.com',
+  site: STAGING ? 'https://jeancamposlabs.github.io' : 'https://rocio-lando.com',
+  base: STAGING ? '/rocio-lando.com' : '/',
   trailingSlash: 'ignore',
   integrations: [
     sitemap({

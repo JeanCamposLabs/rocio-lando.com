@@ -6,6 +6,7 @@ import '@fontsource/caveat/400.css';
 import '@fontsource/caveat/600.css';
 import '../styles/global.css';
 import site from '../data/site';
+import { withBase } from '../lib/path';
 import Preloader from '../components/Preloader.astro';
 import Cursor from '../components/Cursor.astro';
 import Nav from '../components/Nav.astro';
@@ -86,8 +87,8 @@ const jsonLd = {
 
     <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#14110c" media="(prefers-color-scheme: dark)" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/site/icon-180.png" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/site/icon-180.png')} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

@@ -5,6 +5,7 @@
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { withBase } from '../lib/path';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -523,7 +524,7 @@ function inkRain() {
   const N = 26;
   for (let i = 0; i < N; i++) {
     const img = document.createElement('img');
-    img.src = art[i % art.length];
+    img.src = withBase(art[i % art.length]);
     img.loading = 'eager';
     const size = 50 + Math.random() * 90;
     Object.assign(img.style, {

@@ -39,7 +39,14 @@ jobs:
         run: npm ci
 
       - name: Build (optimizes images, then builds Astro)
+        # STAGING=1 builds for the github.io/rocio-lando.com/ sub-path.
+        # Remove STAGING (and re-add public/CNAME) to ship to the root domain.
         run: npm run build
+        env:
+          STAGING: '1'
+
+      - name: Keep staging on the github.io URL (don't claim the custom domain)
+        run: rm -f dist/CNAME
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

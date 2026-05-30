@@ -1,5 +1,6 @@
 ---
 import Game from './Game.astro';
+import { withBase } from '../lib/path';
 ---
 
 <section class="play section" id="play">
@@ -14,7 +15,7 @@ import Game from './Game.astro';
       <p class="play__intro lead" data-reveal style="--reveal-delay:.1s">
         Every good sketchbook has doodles in the margins. Here's one you can play —
         a small surprise, hand-built just for this page.
-        <a href="/play" class="link-underline play__full" data-cursor-hover>Open full screen ↗</a>
+        <a href={withBase('/play')} class="link-underline play__full" data-cursor-hover>Open full screen ↗</a>
       </p>
     </header>
 
