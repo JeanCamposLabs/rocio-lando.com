@@ -103,6 +103,10 @@ nav {
     outline: none;
     cursor:pointer;
     display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.logo-link:hover {
+    transform: rotate(-2deg) scale(1.03);
 }
 .logo {
     font-size: 4rem;
@@ -150,6 +154,17 @@ nav {
     height: 40px;
     position: relative; /* Essential for the spans to rotate correctly */
     z-index: 1001; /* Keep this above the overlay */
+    /* Reset native <button> styles */
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.menu-icon:focus-visible {
+    outline: 2px solid var(--strong-text-color);
+    outline-offset: 4px;
 }
 
 .menu-icon span {
@@ -211,16 +226,30 @@ nav {
     animation: scrollVerticalMosaic 90s linear infinite;
 }
 
+/* JS builds these flex columns from .gallery-grid img */
+.gallery-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
 .gallery-grid img {
     width: 100%;
     /* SHOWS WHOLE IMAGE: height auto ensures no part of the drawing is cut off */
-    height: auto; 
+    height: auto;
     display: block;
     margin-bottom: 4px; /* Space between images vertically */
     break-inside: avoid; /* Prevents an image from splitting between columns */
     border-radius: 4px;
     filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05));
     background-color: #fff;
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+.gallery-grid img:hover {
+    transform: scale(1.02);
+    filter: drop-shadow(0 8px 22px rgba(0,0,0,0.16));
 }
 
 /* --- Fixed Text Overlay --- */
@@ -249,21 +278,11 @@ nav {
 }
 
 .links-hero a {
-    margin: 8 10px;
+    margin: 8px 10px;
     text-decoration: none;
     color: #333;
     font-size: 0.9rem;
     font-weight: 500;
-}
-
-/* --- Seamless Vertical Animation --- */
-@keyframes scrollVerticalMosaic {
-    0% { transform: translateY(0); }
-    100% { 
-        /* Moves upward. If the loop jumps, adjust this % slightly 
-           to match the total height of your duplicated content. */
-        transform: translateY(-0%); 
-    }
 }
 
 /* --- Mobile Responsiveness --- */
@@ -574,6 +593,45 @@ nav {
     width: 100%;
     padding: 15px 0;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: color 0.25s ease;
+}
+.faq-question:hover {
+    color: #b5532b; /* warm terracotta accent on hover */
+}
+.faq-question:focus-visible {
+    outline: 2px solid var(--strong-text-color);
+    outline-offset: 4px;
+}
+
+/* +/- indicator */
+.faq-icon {
+    position: relative;
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+}
+.faq-icon::before,
+.faq-icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 2px;
+    background-color: currentColor;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.faq-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+.faq-item.open .faq-icon::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 0;
 }
 
 .faq-answer {
@@ -581,7 +639,15 @@ nav {
     font-weight: 300;
     line-height: 1.6;
     color: var(--text-color);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+.faq-answer p {
     padding-bottom: 20px;
+}
+.faq-answer a {
+    color: #b5532b;
 }
 .section-title {
     font-family: var(--font-gotic);
@@ -630,4 +696,29 @@ footer {
     text-decoration: none;
     color: var(--strong-text-color);
     font-size: 1.2rem;
+    transition: color 0.25s ease;
+}
+.social-links a:hover {
+    color: #b5532b;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    .gallery-grid {
+        animation: none;
+    }
+    .swipe-hint.right,
+    .swipe-hint.left {
+        animation: none;
+    }
+    .gallery-grid img:hover,
+    .logo-link:hover {
+        transform: none;
+    }
+    .faq-answer {
+        transition: none;
+    }
 }
