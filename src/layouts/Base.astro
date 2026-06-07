@@ -43,6 +43,7 @@ const jsonLd = {
   address: site.location,
   sameAs: site.socials.filter((s) => s.url.startsWith('http')).map((s) => s.url),
 };
+const safeJsonLd = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -91,7 +92,7 @@ const jsonLd = {
     <link rel="apple-touch-icon" href={withBase('/site/icon-180.png')} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script type="application/ld+json" set:html={safeJsonLd} />
   </head>
 
   <body>

@@ -58,9 +58,21 @@ export interface Site {
 export const site = data as Site;
 export default site;
 
+const HTML_ESCAPE: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+function escapeHtml(text: string): string {
+  return text.replace(/[&<>"']/g, (ch) => HTML_ESCAPE[ch]);
+}
+
 /** Renders simple *markdown-ish* emphasis (*word*) used in JSON copy. */
 export function emphasize(text: string): string {
-  return text.replace(
+  return escapeHtml(text).replace(
     /\*([^*]+)\*/g,
     '<em class="italic text-accent">$1</em>'
   );

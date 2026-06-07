@@ -47,6 +47,7 @@ const jsonLd = {
   locationCreated: d.location || undefined,
   image: new URL(d.image!, 'https://rocio-lando.com').href,
 };
+const safeJsonLd = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 ---
 
 <Base title={d.title} description={d.alt || `${d.title} — ${d.medium} by Rocío Landó.`} image={d.image}>
@@ -116,7 +117,7 @@ const jsonLd = {
     </div>
   </article>
 
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  <script type="application/ld+json" set:html={safeJsonLd} is:inline />
 </Base>
 
 <style>
