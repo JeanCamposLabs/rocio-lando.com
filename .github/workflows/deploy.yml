@@ -31,7 +31,8 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Stamp version (drives client auto-refresh on new deploys)
-        run: echo "{\"version\": \"${{ github.sha }}\"}" > version.json
+        run: |
+          printf '{"version": "%s"}\n' "${{ github.sha }}" > version.json
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
