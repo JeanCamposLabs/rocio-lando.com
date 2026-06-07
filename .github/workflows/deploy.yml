@@ -1,43 +1,40 @@
-name: Build & Deploy (FTP)
+name: Deploy to GitHub Pages
 
-# Builds the Astro site and uploads the production output (dist/) to the
-# existing web host's public_html — so rocio-lando.com serves the new site
-# with no DNS changes. Uses the repo's existing FTP_* secrets.
+# Publishes the static site (root of the repo) to GitHub Pages.
+# The CNAME file keeps the custom domain (rocio-lando.com).
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency:
-  group: ftp-deploy
+  group: pages
   cancel-in-progress: true
 
 jobs:
   deploy:
-    name: Build & upload
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          node-version: 20
-          cache: npm
+          path: .
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Astro (production · root domain)
-        run: npm run build
-
-      - name: Deploy dist/ to host via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: ./public_html/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
